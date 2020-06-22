@@ -1,11 +1,13 @@
 const express = require('express');
 const app = express();
-const connectDB = require('./config/db');
-const Event = require('./models/Event');
 const graphqlHTTP = require('express-graphql');
 const {
     buildSchema
 } = require('graphql');
+const bcrypt = require('bcrypt');
+const connectDB = require('./config/db');
+const Event = require('./models/Event');
+const User = require('./models/User');
 
 // !Database Connect
 connectDB();
@@ -26,6 +28,17 @@ app.use(
                 date: String!
             }
 
+            type User {
+                _id: String!
+                email: String!
+                password: String
+            }
+
+            input UserInput {
+                email: String!
+                password: String!
+            }
+
             input EventInput {
                 title: String!
                 description: String!
@@ -38,6 +51,7 @@ app.use(
 
             type RootMutation {
                 createEvent(eventInput: EventInput): Event!
+                createUser(userInput: UserInput): User!
             }
 
             schema {
@@ -47,11 +61,11 @@ app.use(
         `),
         rootValue: {
             events: () => {
-                return Event
-                    .find()
+                return Event.find()
                     .then(events => {
                         return events;
-                    }).catch(err => {
+                    })
+                    .catch(err => {
                         console.log(err);
                         throw err;
                     });
@@ -68,13 +82,60 @@ app.use(
                 const event = new Event({
                     title: title,
                     description: description,
-                    price: price
+                    price: price,
+                    creator: '5ef0fd3d21101f1dd05aa2ba'
                 });
+                let createdEvent;
                 return event
                     .save()
                     .then(result => {
-                        // console.log(result);
-                        return result;
+                        createEvent = result;
+                        return User.findById('5ef0fd3d21101f1dd05aa2ba');
+                    })
+                    .then(user => {
+                        if (!user) throw new Error('User Not Found');
+                        user.createdEvents.push(event);
+                        return user.save();
+                    })
+                    .then(result => {
+                        return createEvent;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        throw new Error(err);
+                    });
+            },
+            createUser: args => {
+                const {
+                    userInput: {
+                        email,
+                        password
+                    },
+                } = args;
+                return User
+                    .findOne({
+                        email
+                    })
+                    .then((user) => {
+                        if (user) throw new Error('User Exists already.');
+                        else {
+                            return bcrypt
+                                .hash(password, 10)
+                                .then(hashedPassword => {
+                                    const user = new User({
+                                        email,
+                                        password: hashedPassword,
+                                    });
+                                    return user
+                                        .save()
+                                        .then(result => {
+                                            return {
+                                                ...result._doc,
+                                                password: null
+                                            }
+                                        });
+                                });
+                        }
                     }).catch(err => {
                         console.log(err);
                         throw new Error(err);
