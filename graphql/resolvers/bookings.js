@@ -8,8 +8,11 @@ const {
 
 module.exports = {
     // !All Bookings
-    bookings: async () => {
+    bookings: async (args, req) => {
         try {
+            if (!req.isAuth) {
+                throw new Error('Unauthenticated request');
+            }
             const bookings = await Booking.find();
             return bookings.map(booking => {
                 return transformBooking(booking);
@@ -20,13 +23,15 @@ module.exports = {
         }
     },
     //! Add Booking
-    bookEvent: async args => {
+    bookEvent: async (args, req) => {
         try {
+            if (!req.isAuth) {
+                throw new Error('Unauthenticated request');
+            }
             const newBooking = new Booking({
                 event: args.eventID,
-                user: '5ef19bd82660c73370905ff7'
+                user: req.userID
             });
-
             const result = await newBooking.save();
             return transformBooking(result);
         } catch (e) {
@@ -35,8 +40,11 @@ module.exports = {
         }
     },
     //! Cancel Booking
-    cancelBooking: async args => {
+    cancelBooking: async (args, req) => {
         try {
+            if (!req.isAuth) {
+                throw new Error('Unauthenticated request');
+            }
             const booking = await Booking.findById(args.bookingID).populate('event');
             const event = transformEvent(booking.event);
             await Booking.deleteOne({

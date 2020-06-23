@@ -4,6 +4,8 @@ const graphqlHTTP = require('express-graphql');
 const connectDB = require('./config/db');
 const graphQLSchema = require('./graphql/schema/index')
 const graphQLResolvers = require('./graphql/resolvers/index');
+const isAuth = require('./middleware/is-Auth');
+
 
 // !Database Connect
 connectDB();
@@ -11,6 +13,8 @@ connectDB();
 // !Body Parser Setup
 app.use(express.json());
 
+//! Middleware
+app.use(isAuth);
 
 // !Express GraphQL Setup
 app.use(
