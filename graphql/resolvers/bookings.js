@@ -1,32 +1,10 @@
 const Booking = require('../../models/Booking');
 const {
-    dateToString
-} = require('../../helpers/date');
-const {
-    creator,
-    singleEvent
+    transformBooking,
+    transformEvent
 } = require('./merge');
 
 
-//! Transform Booking Setup 
-const transformBooking = booking => {
-    return {
-        ...booking._doc,
-        user: creator.bind(this, booking.user),
-        event: singleEvent.bind(this, booking.event),
-        createdAt: dateToString(booking.createdAt),
-        updatedAt: dateToString(booking.updatedAt)
-    }
-}
-
-//! Transform Events Setup
-const transformEvent = event => {
-    return {
-        ...event._doc,
-        creator: creator.bind(this, event.creator),
-        date: dateToString(event.date),
-    }
-}
 
 module.exports = {
     // !All Bookings
