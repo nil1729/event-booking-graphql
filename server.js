@@ -5,16 +5,22 @@ const connectDB = require('./config/db');
 const graphQLSchema = require('./graphql/schema/index')
 const graphQLResolvers = require('./graphql/resolvers/index');
 const isAuth = require('./middleware/is-Auth');
-
+const cors = require('cors');
 
 // !Database Connect
 connectDB();
+
+if (process.env.NODE_ENV !== 'production') {
+    app.use(cors());
+    console.log('API is Cross Site accessible');
+}
 
 // !Body Parser Setup
 app.use(express.json());
 
 //! Middleware
 app.use(isAuth);
+
 
 // !Express GraphQL Setup
 app.use(
