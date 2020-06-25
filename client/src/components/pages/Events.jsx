@@ -3,11 +3,15 @@ import AuthContext from '../../context/AuthContext.js';
 import Modal from '../Modal';
 import ListItem from '../ListItem';
 import Progress from '../Progress';
+import DetailModal from '../DetailModal';
+
 const Events = () => {
 	const authContext = useContext(AuthContext);
 	const { token } = authContext;
 	const [modalShow, setModalShow] = useState(false);
+	const [detailModalShow, setDetailModalShow] = useState(false);
 	const [events, setEvents] = useState([]);
+	const [current, setCurrent] = useState({});
 	const [loading, setLoading] = useState(false);
 	const closeModal = () => {
 		setModalShow(false);
@@ -41,7 +45,7 @@ const Events = () => {
 					date
 					price
 					creator {
-						email
+						_id
 					}
 				}
 			}
@@ -51,6 +55,13 @@ const Events = () => {
 		sendRequest(requestData);
 		// eslint-disable-next-line
 	}, []);
+	const openDeatilModal = event => {
+		setCurrent(event);
+		setDetailModalShow(true);
+	};
+	const closeDetailModal = () => {
+		setDetailModalShow(false);
+	};
 	return (
 		<div className='container'>
 			<div className='jumbotron text-center'>
@@ -64,13 +75,22 @@ const Events = () => {
 				)}
 			</div>
 			{modalShow && <Modal closeModal={closeModal} />}
+			{detailModalShow && (
+				<DetailModal event={current} closeDetailModal={closeDetailModal} />
+			)}
 			<div className='container mb-4'>
 				<h4 className='text-center'>List of All Events</h4>
 				<div className='list-group'>
 					{loading ? (
 						<Progress />
 					) : (
-						events.map(event => <ListItem key={event._id} data={event} />)
+						events.map(event => (
+							<ListItem
+								key={event._id}
+								data={event}
+								openDeatilModal={openDeatilModal}
+							/>
+						))
 					)}
 				</div>
 			</div>

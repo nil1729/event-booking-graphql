@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	BrowserRouter as Router,
 	Route,
@@ -23,6 +23,7 @@ const App = () => {
 	});
 
 	const login = authData => {
+		localStorage.setItem('AuthData', JSON.stringify(authData));
 		setAuth({
 			...auth,
 			token: authData.token,
@@ -32,6 +33,7 @@ const App = () => {
 	};
 
 	const logout = () => {
+		localStorage.removeItem('AuthData');
 		setAuth({
 			...auth,
 			token: null,
@@ -40,6 +42,21 @@ const App = () => {
 		});
 	};
 
+	const loadData = () => {
+		const authData = JSON.parse(localStorage.getItem('AuthData'));
+		if (authData) {
+			setAuth({
+				...auth,
+				token: authData.token,
+				userID: authData.userID,
+				tokenExpiresIn: authData.tokenExpiresIn,
+			});
+		}
+	};
+	useEffect(() => {
+		loadData();
+		// eslint-disable-next-line
+	}, []);
 	return (
 		<Router>
 			<>

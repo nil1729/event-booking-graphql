@@ -1,22 +1,46 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+import AuthContext from '../context/AuthContext.js';
 
-const ListItem = ({ data }) => {
-	const formattedDate = new Date(data.date).toLocaleString();
+const ListItem = ({ data, openDeatilModal }) => {
+	const authContext = useContext(AuthContext);
+	const { userID } = authContext;
+	const formattedDate = moment(data.date).format('Do MMM YYYY');
 	return (
 		<li className='mb-2 border list-group-item list-group-item-action flex-column align-items-start'>
-			<div className='d-flex w-100 justify-content-between'>
-				<h5 className='mb-1 font-weight-bold text-danger'>{data.title}</h5>
-				<small className='text-muted'>{formattedDate}</small>
+			<div className='mb-2 d-flex w-100 justify-content-between align-items-center'>
+				<h5 className='font-weight-bold' style={{ color: 'blue' }}>
+					{data.title}
+				</h5>
+				{userID === data.creator._id ? (
+					<p className='lead text-dark'>You are the owner of this Event</p>
+				) : (
+					<button
+						className='btn btn-sm btn-danger'
+						onClick={() => {
+							openDeatilModal(data);
+						}}>
+						View Details
+					</button>
+				)}
 			</div>
-			<p className='mb-1'>{data.description}</p>
-			<p className='text-muted font-weight-bold'>Price: ${data.price}</p>
+			{userID === data.creator._id ? (
+				<p className='mb-1'>{data.description}</p>
+			) : (
+				<></>
+			)}
+			<p className='lead'>
+				Price: ₹{data.price} -{' '}
+				<small className='text-dark'>{formattedDate}</small>
+			</p>
 		</li>
 	);
 };
 
 ListItem.propTypes = {
 	data: PropTypes.object.isRequired,
+	openDeatilModal: PropTypes.func.isRequired,
 };
 
 export default ListItem;

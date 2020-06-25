@@ -1,42 +1,42 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  outline: none !important;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	outline: none !important;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+	width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: aquamarine;
+	background-color: aquamarine;
 }
 
 * {
-  outline: none !important;
+	outline: none !important;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
 }
 
 button {
-  box-shadow: none !important;
-  outline: none !important;
+	box-shadow: none !important;
+	outline: none !important;
 }
 
 .modal {
-  display: block !important;
-  background-color: rgba(39, 38, 38, 0.52);
-  outline: none !important;
-  overflow-y: scroll;
+	display: block !important;
+	background-color: rgba(17, 16, 16, 0.726);
+	outline: none !important;
+	overflow-y: scroll;
 }
 
 form input {
-  user-select: none !important;
+	user-select: none !important;
 }
