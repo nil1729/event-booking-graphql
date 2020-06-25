@@ -53,7 +53,10 @@ const Authentication = () => {
 			body: JSON.stringify(requestData),
 			redirect: 'follow',
 		};
-		const response = await fetch('/graphql', requestOptions);
+		const response = await fetch(
+			'http://localhost:5000/graphql',
+			requestOptions
+		);
 		const JSONData = await response.json();
 		return JSONData;
 	};

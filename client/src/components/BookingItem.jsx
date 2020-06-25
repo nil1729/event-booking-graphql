@@ -23,7 +23,7 @@ const BookingItem = ({ booking, cancelBooking }) => {
 			body: JSON.stringify(requestData),
 			redirect: 'follow',
 		};
-		await fetch('/graphql', requestOptions);
+		await fetch('http://localhost:5000/graphql', requestOptions);
 	};
 	const requestData = {
 		query: `
