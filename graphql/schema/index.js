@@ -29,8 +29,7 @@ module.exports = buildSchema(`
 
         type AuthData {
             userID: ID!
-            token: String!,
-            tokenExpiresIn: String!
+            token: String!
         }
         
         input UserInput {
@@ -49,6 +48,7 @@ module.exports = buildSchema(`
             events: [Event!]!
             bookings: [Booking!]!
             loginUser(userInput: UserInput!): AuthData!
+            validateAuth: Boolean!
         }
 
         type RootMutation {

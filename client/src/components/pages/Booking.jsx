@@ -1,58 +1,31 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import Progress from '../Progress';
+import EventContext from '../../context/EventContext.js';
 import AuthContext from '../../context/AuthContext.js';
+import AlertContext from '../../context/AlertContext.js';
 import BookingItem from '../BookingItem';
 
 const Bookings = () => {
-	const [loading, setLoading] = useState(false);
-	const [bookings, setBookings] = useState([]);
 	const authContext = useContext(AuthContext);
-	const { token } = authContext;
-	const sendRequest = async requestData => {
-		setLoading(true);
-		const myHeaders = new Headers();
-		myHeaders.append('Content-Type', 'application/json');
-		myHeaders.append('Authorization', `Bearer ${token}`);
-		const requestOptions = {
-			method: 'POST',
-			headers: myHeaders,
-			body: JSON.stringify(requestData),
-			redirect: 'follow',
-		};
-		const response = await fetch(
-			'http://localhost:5000/graphql',
-			requestOptions
-		);
-		const JSONData = await response.json();
-		setBookings(JSONData.data.bookings);
-		setLoading(false);
-	};
-	const requestData = {
-		query: `
-			query {
-				bookings {
-					_id
-					event {
-						title
-						price
-						description
-						date
-					}
-					user {
-						email
-					}
-					createdAt
-					updatedAt
-				}
-			}
-		`,
-	};
+	const { validateAuth } = authContext;
+	const alertContext = useContext(AlertContext);
+	const { showAlert } = alertContext;
+	const eventContext = useContext(EventContext);
+	const { Bookings } = eventContext;
+	const history = useHistory();
+	const [bookings, setBookings] = useState(Bookings);
 	useEffect(() => {
-		sendRequest(requestData);
+		setBookings(Bookings);
 		// eslint-disable-next-line
-	}, []);
-	const cancelBooking = () => {
-		sendRequest(requestData);
+	}, [Bookings]);
+	const cancelBooking = async () => {
+		if (await validateAuth()) {
+			return;
+		} else {
+			showAlert('warning', [{ message: 'Plaese Login First' }]);
+			history.push('/auth');
+		}
 	};
 	return (
 		<div className='container'>
@@ -61,8 +34,10 @@ const Bookings = () => {
 			</div>
 			<div className='container px-2'>
 				<div className='list-group'>
-					{loading ? (
+					{!bookings ? (
 						<Progress />
+					) : bookings.length === 0 ? (
+						<p className='lead text-center'>You don't have Any Bookings</p>
 					) : (
 						bookings.map(booking => (
 							<BookingItem

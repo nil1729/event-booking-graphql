@@ -25,7 +25,9 @@ const Modal = ({ closeModal }) => {
 			body: JSON.stringify(requestData),
 			redirect: 'follow',
 		};
-		await fetch('http://localhost:5000/graphql', requestOptions);
+		const res = await fetch('/graphql', requestOptions);
+		const JSONData = await res.json();
+		return JSONData.data.createEvent;
 	};
 	const resetForm = () => {
 		titleEl.current.value = '';
@@ -50,22 +52,23 @@ const Modal = ({ closeModal }) => {
                 mutation {
                     createEvent (eventInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}"}) {
                         _id
-                        price
-                        creator {
-                            _id
-                            email
-                            password
-                        }
+						title
+						description
+						date
+						price
+						creator {
+							_id
+						}
                     }
                 }
             `,
 		};
-		await sendRequest(requestData);
+		const res = await sendRequest(requestData);
 		resetForm();
-		closehandle();
+		closehandle(res);
 	};
-	const closehandle = () => {
-		closeModal();
+	const closehandle = data => {
+		closeModal(data);
 	};
 	return (
 		<div className='modal'>

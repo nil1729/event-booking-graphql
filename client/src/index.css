@@ -45,4 +45,28 @@ form input {
 	nav .nav-item button {
 		margin-top: 10px;
 	}
+
+	.auth__form {
+		width: 90% !important;
+	}
+
+	.event__heading {
+		font-size: 1.5rem;
+	}
+
+	.list__item {
+		text-align: center;
+	}
+
+	.list__item__desc {
+		text-align: justify;
+	}
+
+	.list__item__header {
+		flex-direction: column !important;
+	}
+
+	.lead.my-0 {
+		font-size: 1rem;
+	}
 }

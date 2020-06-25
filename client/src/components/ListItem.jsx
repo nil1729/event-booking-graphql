@@ -8,8 +8,8 @@ const ListItem = ({ data, openDeatilModal }) => {
 	const { userID } = authContext;
 	const formattedDate = moment(data.date).format('Do MMM YYYY');
 	return (
-		<li className='mb-2 border list-group-item list-group-item-action flex-column align-items-start'>
-			<div className='mb-2 d-flex w-100 justify-content-between align-items-center'>
+		<li className='list__item mb-2 border list-group-item list-group-item-action flex-column align-items-start'>
+			<div className='list__item__header mb-2 d-flex w-100 justify-content-between align-items-center'>
 				<h5 className='font-weight-bold' style={{ color: 'blue' }}>
 					{data.title}
 				</h5>
@@ -26,7 +26,7 @@ const ListItem = ({ data, openDeatilModal }) => {
 				)}
 			</div>
 			{userID === data.creator._id ? (
-				<p className='mb-1'>{data.description}</p>
+				<p className='mb-1 list__item__desc'>{data.description}</p>
 			) : (
 				<></>
 			)}
