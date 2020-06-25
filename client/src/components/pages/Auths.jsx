@@ -44,9 +44,9 @@ const Authentication = () => {
 		return requestData;
 	};
 	const sendRequest = async requestData => {
-		var myHeaders = new Headers();
+		const myHeaders = new Headers();
 		myHeaders.append('Content-Type', 'application/json');
-		var requestOptions = {
+		const requestOptions = {
 			method: 'POST',
 			headers: myHeaders,
 			body: JSON.stringify(requestData),
@@ -103,12 +103,12 @@ const Authentication = () => {
 						required
 					/>
 				</div>
-				<button type='submit' className='btn btn-danger'>
+				<button type='submit' className='btn btn-sm btn-danger'>
 					Submit
 				</button>
 				<button
 					type='button'
-					className='btn btn-warning ml-2 text-dark'
+					className='btn btn-sm btn-warning ml-2 text-dark'
 					onClick={modeChange}>
 					Switch to {modeLogin ? 'SignUp' : 'Login'}
 				</button>

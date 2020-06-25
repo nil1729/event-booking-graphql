@@ -10,7 +10,9 @@ module.exports = {
     //! All Events
     events: async () => {
         try {
-            const events = await Event.find();
+            const events = await Event.find().sort({
+                createdAt: -1
+            });
             return events.map(event => {
                 return transformEvent(event);
             });
@@ -29,7 +31,8 @@ module.exports = {
                 eventInput: {
                     title,
                     description,
-                    price
+                    price,
+                    date
                 },
             } = args;
 
@@ -37,6 +40,7 @@ module.exports = {
                 title: title,
                 description: description,
                 price: price,
+                date: new Date(date),
                 creator: req.userID
             });
             let createdEvent;
