@@ -9,11 +9,42 @@ const DetailModal = ({ event, closeDetailModal }) => {
 	const { token } = authContext;
 	const formattedDate = moment(event.date).format('Do MMM YYYY');
 	const history = useHistory();
-	const handleBook = () => {
+
+	const sendRequest = async requestData => {
+		const myHeaders = new Headers();
+		myHeaders.append('Content-Type', 'application/json');
+		myHeaders.append('Authorization', `Bearer ${token}`);
+		const requestOptions = {
+			method: 'POST',
+			headers: myHeaders,
+			body: JSON.stringify(requestData),
+			redirect: 'follow',
+		};
+		await fetch('http://localhost:5000/graphql', requestOptions);
+	};
+	const requestData = {
+		query: `
+            mutation {
+                    bookEvent (eventID: "${event._id}") {
+                        _id
+                        event {
+                            title
+                        }
+                        user {
+                            email
+                        }
+                        createdAt
+                        updatedAt
+                    }
+                }
+		`,
+	};
+	const handleBook = async () => {
 		if (!token) {
 			history.push('/auth');
 		} else {
-			console.log('Authentication successful');
+			await sendRequest(requestData);
+			history.push('/bookings');
 		}
 	};
 	return (

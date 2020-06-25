@@ -68,7 +68,7 @@ const Events = () => {
 				<h2>Share your own Events</h2>
 				{token && (
 					<button
-						className='btn btn-danger'
+						className='btn btn-sm btn-warning text-dark'
 						onClick={() => setModalShow(!modalShow)}>
 						Create Event
 					</button>
