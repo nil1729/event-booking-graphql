@@ -26,6 +26,7 @@ const App = () => {
 	const [bookings, setBookings] = useState(null);
 	const login = authData => {
 		localStorage.setItem('AuthData', JSON.stringify(authData));
+		laodBookings(authData.token);
 		setAuth({
 			...auth,
 			token: authData.token,
@@ -67,11 +68,13 @@ const App = () => {
 				body: JSON.stringify(requestDate),
 				redirect: 'follow',
 			};
-			const response = await fetch('/graphql', requestOptions);
+			const response = await fetch(
+				'http://localhost:5000/graphql',
+				requestOptions
+			);
 			const JSONData = await response.json();
 			if (JSONData.data.validateAuth) {
 				login(authData);
-				laodBookings(authData.token);
 				return true;
 			} else {
 				logout();
@@ -89,7 +92,10 @@ const App = () => {
 			body: JSON.stringify(requestData),
 			redirect: 'follow',
 		};
-		const response = await fetch('/graphql', requestOptions);
+		const response = await fetch(
+			'http://localhost:5000/graphql',
+			requestOptions
+		);
 		const JSONData = await response.json();
 		return JSONData;
 	};

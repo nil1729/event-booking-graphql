@@ -1,6 +1,7 @@
 node_modules
 default.json
 config.env
+production.json
 
 /client/.pnp
 /client/.pnp.js

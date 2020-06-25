@@ -25,7 +25,7 @@ const Modal = ({ closeModal }) => {
 			body: JSON.stringify(requestData),
 			redirect: 'follow',
 		};
-		const res = await fetch('/graphql', requestOptions);
+		const res = await fetch('http://localhost:5000/graphql', requestOptions);
 		const JSONData = await res.json();
 		return JSONData.data.createEvent;
 	};
