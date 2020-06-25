@@ -13,7 +13,11 @@ module.exports = {
             if (!req.isAuth) {
                 throw new Error('Unauthenticated request');
             }
-            const bookings = await Booking.find();
+            const bookings = await Booking.find({
+                user: req.userID
+            }).sort({
+                createdAt: -1
+            });
             return bookings.map(booking => {
                 return transformBooking(booking);
             });

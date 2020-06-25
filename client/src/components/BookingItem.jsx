@@ -1,13 +1,18 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import AuthContext from '../context/AuthContext.js';
+import AlertContext from '../context/AlertContext.js';
 const BookingItem = ({ booking, cancelBooking }) => {
 	const formatDate = date => {
 		return moment(date).format('Do MMM YYYY hh:mm a');
 	};
 	const authContext = useContext(AuthContext);
-	const { token } = authContext;
+	const alertContext = useContext(AlertContext);
+	const { token, validateAuth } = authContext;
+	const { showAlert } = alertContext;
+	const history = useHistory();
 	const sendRequest = async requestData => {
 		const myHeaders = new Headers();
 		myHeaders.append('Content-Type', 'application/json');
@@ -18,7 +23,7 @@ const BookingItem = ({ booking, cancelBooking }) => {
 			body: JSON.stringify(requestData),
 			redirect: 'follow',
 		};
-		await fetch('http://localhost:5000/graphql', requestOptions);
+		await fetch('/graphql', requestOptions);
 	};
 	const requestData = {
 		query: `
@@ -30,20 +35,25 @@ const BookingItem = ({ booking, cancelBooking }) => {
 		`,
 	};
 	const handleCancel = async () => {
-		await sendRequest(requestData);
-		cancelBooking();
+		if (await validateAuth()) {
+			await sendRequest(requestData);
+			cancelBooking();
+		} else {
+			showAlert('warning', [{ message: 'Plaese Login First' }]);
+			history.push('/auth');
+		}
 	};
 	return (
-		<li className='mb-3 border align-items-center list-group-item list-group-item-action flex-column align-items-start'>
-			<div className='mb-2 d-flex w-100 justify-content-between align-items-center'>
-				<h5 className='font-weight-bold' style={{ color: 'blue' }}>
+		<li className='mb-3 list__item border align-items-center list-group-item list-group-item-action flex-column align-items-start'>
+			<div className='list__item__header mb-2 d-flex w-100 justify-content-between align-items-center'>
+				<h5 className=' font-weight-bold' style={{ color: 'blue' }}>
 					{booking.event.title}
 				</h5>
 				<button className='btn btn-sm btn-danger' onClick={handleCancel}>
 					Cancel
 				</button>
 			</div>
-			<p>{booking.event.description}</p>
+			<p className='list__item__desc'>{booking.event.description}</p>
 			<hr />
 			<p className='lead my-0'>
 				Event scheduled on{' '}

@@ -20,21 +20,24 @@ const DetailModal = ({ event, closeDetailModal }) => {
 			body: JSON.stringify(requestData),
 			redirect: 'follow',
 		};
-		await fetch('http://localhost:5000/graphql', requestOptions);
+		const res = await fetch('/graphql', requestOptions);
+		const JSONData = await res.json();
+		return JSONData.data.bookEvent;
 	};
 	const requestData = {
 		query: `
             mutation {
                     bookEvent (eventID: "${event._id}") {
                         _id
-                        event {
-                            title
-                        }
-                        user {
-                            email
-                        }
-                        createdAt
-                        updatedAt
+						event {
+							title
+							description
+							date
+						}
+						user {
+							email
+						}
+						createdAt
                     }
                 }
 		`,
@@ -43,7 +46,8 @@ const DetailModal = ({ event, closeDetailModal }) => {
 		if (!token) {
 			history.push('/auth');
 		} else {
-			await sendRequest(requestData);
+			const res = await sendRequest(requestData);
+			closeDetailModal(res);
 			history.push('/bookings');
 		}
 	};

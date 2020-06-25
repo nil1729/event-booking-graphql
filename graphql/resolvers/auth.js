@@ -18,7 +18,7 @@ module.exports = {
                 email
             });
             if (user) {
-                throw new Error('User Exists already.');
+                throw new Error('Email already Registered');
             } else {
                 const hashedPassword = await bcrypt.hash(password, 10);
                 user = new User({
@@ -49,11 +49,11 @@ module.exports = {
                 email
             });
             if (!user) {
-                throw new Error('Authentication Error');
+                throw new Error('Authentication Failed');
             }
             let isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                throw new Error('Authentication Error');
+                throw new Error('Authentication Failed');
             }
             const token = await jwt.sign({
                 userID: user.id,
@@ -64,8 +64,15 @@ module.exports = {
             return {
                 userID: user.id,
                 token: token,
-                tokenExpiresIn: 1
             }
+        } catch (e) {
+            console.log(e);
+            throw new Error(e);
+        }
+    },
+    validateAuth: async (args, req) => {
+        try {
+            return req.isAuth;
         } catch (e) {
             console.log(e);
             throw new Error(e);

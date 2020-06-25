@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
     try {
         decodedToken = await jwt.verify(token, config.get('jwtSecret'));
     } catch (e) {
-        console.log(e);
+        // console.log(e);
         req.isAuth = false;
         return next();
     }
@@ -26,5 +26,6 @@ module.exports = async (req, res, next) => {
     }
     req.isAuth = true;
     req.userID = decodedToken.userID;
+    req.token = token;
     next();
 };

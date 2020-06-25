@@ -1,11 +1,13 @@
 import React, { useState, useRef, useContext } from 'react';
-
+import Alert from '../Alert';
 import AuthContext from '../../context/AuthContext.js';
+import AlertContext from '../../context/AlertContext.js';
 
 const Authentication = () => {
 	const authContext = useContext(AuthContext);
+	const alertContext = useContext(AlertContext);
 	const { login } = authContext;
-
+	const { showAlert, msgs } = alertContext;
 	const [modeLogin, setModeLogin] = useState(true);
 	const emailEl = useRef();
 	const passwordEl = useRef();
@@ -23,7 +25,6 @@ const Authentication = () => {
                     loginUser(userInput: {email: "${email}", password: "${password}"}){
                         userID,
                         token
-                        tokenExpiresIn
                     }
                 }
             `,
@@ -52,10 +53,7 @@ const Authentication = () => {
 			body: JSON.stringify(requestData),
 			redirect: 'follow',
 		};
-		const response = await fetch(
-			'http://localhost:5000/graphql',
-			requestOptions
-		);
+		const response = await fetch('/graphql', requestOptions);
 		const JSONData = await response.json();
 		return JSONData;
 	};
@@ -70,8 +68,10 @@ const Authentication = () => {
 		resetForm();
 		const requestData = createRequestData(email, password, modeLogin);
 		const response = await sendRequest(requestData);
-		if (response.data.loginUser && response.data.loginUser.token) {
-			login(response.data.loginUser);
+		if (response.errors) {
+			return showAlert('warning', response.errors);
+		} else if (response.data.loginUser) {
+			return login(response.data.loginUser);
 		} else {
 			setModeLogin(true);
 		}
@@ -79,7 +79,11 @@ const Authentication = () => {
 
 	return (
 		<div className='container mt-4'>
-			<form style={{ width: '60%', margin: 'auto' }} onSubmit={submitHandle}>
+			{msgs && <Alert />}
+			<form
+				className='auth__form'
+				style={{ width: '60%', margin: 'auto' }}
+				onSubmit={submitHandle}>
 				<h2 className='text-center'>{modeLogin ? 'Login' : 'Register'} User</h2>
 				<div className='form-group'>
 					<label>Email address</label>
