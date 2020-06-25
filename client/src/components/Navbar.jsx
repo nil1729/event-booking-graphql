@@ -1,27 +1,55 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import AuthContext from '../context/AuthContext.js';
 
 const Navbar = () => {
+	const [open, setOpen] = useState(false);
+	const mbStyle = () => {
+		return {
+			display: open ? 'block' : 'none',
+		};
+	};
+	const authContext = useContext(AuthContext);
+	const { token, logout } = authContext;
 	return (
 		<nav className='navbar navbar-expand-lg navbar-dark bg-primary'>
 			<span className='navbar-brand'>GraphQL Events</span>
-			<div className='collapse navbar-collapse' id='navbarColor01'>
-				<ul className='navbar-nav mr-auto'>
-					<li className='nav-item'>
-						<Link className='nav-link' to='/auth'>
-							Authentication
-						</Link>
-					</li>
-					<li className='nav-item'>
-						<Link className='nav-link' to='/events'>
+			<button
+				onClick={() => setOpen(!open)}
+				className='navbar-toggler'
+				type='button'>
+				<span className='navbar-toggler-icon'></span>
+			</button>
+			<div className='collapse navbar-collapse' style={mbStyle()}>
+				<ul className='navbar-nav ml-auto d-flex align-items-center'>
+					{!token && (
+						<li className='nav-item' onClick={() => setOpen(!open)}>
+							<NavLink className='nav-link' to='/auth'>
+								Authenticate
+							</NavLink>
+						</li>
+					)}
+					<li className='nav-item' onClick={() => setOpen(!open)}>
+						<NavLink className='nav-link' to='/events'>
 							Events
-						</Link>
+						</NavLink>
 					</li>
-					<li className='nav-item'>
-						<Link className='nav-link' to='/bookings'>
-							Bookings
-						</Link>
-					</li>
+					{token && (
+						<>
+							<li className='nav-item' onClick={() => setOpen(!open)}>
+								<NavLink className='nav-link' to='/bookings'>
+									Bookings
+								</NavLink>
+							</li>
+							<li className='nav-item' onClick={() => setOpen(!open)}>
+								<button
+									onClick={logout}
+									className='btn btn-warning btn-sm text-dark'>
+									Logout
+								</button>
+							</li>
+						</>
+					)}
 				</ul>
 			</div>
 		</nav>
