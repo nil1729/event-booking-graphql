@@ -1,14 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
+
+import AuthContext from '../../context/AuthContext.js';
 
 const Authentication = () => {
+	const authContext = useContext(AuthContext);
+	const { login } = authContext;
+
 	const [modeLogin, setModeLogin] = useState(true);
 	const emailEl = useRef();
 	const passwordEl = useRef();
-	const btnStyle = () => {
-		return {
-			boxShadow: 'none',
-		};
-	};
 	const modeChange = () => {
 		setModeLogin(!modeLogin);
 	};
@@ -70,7 +70,11 @@ const Authentication = () => {
 		resetForm();
 		const requestData = createRequestData(email, password, modeLogin);
 		const response = await sendRequest(requestData);
-		console.log(response.data);
+		if (response.data.loginUser && response.data.loginUser.token) {
+			login(response.data.loginUser);
+		} else {
+			setModeLogin(true);
+		}
 	};
 
 	return (
@@ -104,7 +108,6 @@ const Authentication = () => {
 				</button>
 				<button
 					type='button'
-					style={btnStyle()}
 					className='btn btn-warning ml-2 text-dark'
 					onClick={modeChange}>
 					Switch to {modeLogin ? 'SignUp' : 'Login'}
