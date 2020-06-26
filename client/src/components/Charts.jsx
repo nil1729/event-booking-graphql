@@ -15,7 +15,6 @@ const Charts = () => {
 		};
 		for (let i = 0; i < prices.length; i++) {
 			let option;
-			console.log(typeof prices[i], typeof 100);
 			if (prices[i] <= 100) {
 				option = 'Cheap';
 			}
