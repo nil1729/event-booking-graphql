@@ -129,6 +129,7 @@ const App = () => {
 							title
 							description
 							date
+							price
 						}
 						user {
 							email

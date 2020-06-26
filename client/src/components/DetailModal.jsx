@@ -33,6 +33,7 @@ const DetailModal = ({ event, closeDetailModal }) => {
 							title
 							description
 							date
+							price
 						}
 						user {
 							email
