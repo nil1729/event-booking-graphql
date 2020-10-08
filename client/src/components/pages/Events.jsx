@@ -14,10 +14,8 @@ const Events = () => {
   const [modalShow, setModalShow] = useState(false);
   const [detailModalShow, setDetailModalShow] = useState(false);
   const [current, setCurrent] = useState({});
+
   const closeModal = (data) => {
-    if (data._id) {
-      addEvent(data);
-    }
     setModalShow(false);
   };
 
@@ -25,10 +23,7 @@ const Events = () => {
     setCurrent(event);
     setDetailModalShow(true);
   };
-  const closeDetailModal = (data) => {
-    if (data._id) {
-      addBooking(data);
-    }
+  const closeDetailModal = () => {
     setDetailModalShow(false);
   };
   return (

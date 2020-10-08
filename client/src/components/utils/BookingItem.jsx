@@ -1,56 +1,36 @@
-import React, { useContext } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import AuthContext from "../../context/Auths/authContext";
-import AlertContext from "../../context/Alerts/alertContext";
-const BookingItem = ({ booking, cancelBooking }) => {
+import EventContext from "../../context/Events/eventContext";
+
+const BookingItem = ({ booking }) => {
   const formatDate = (date) => {
     return moment(date).format("Do MMM YYYY hh:mm a");
   };
-  const authContext = useContext(AuthContext);
-  const alertContext = useContext(AlertContext);
-  const { token, validateAuth } = authContext;
-  const { showAlert } = alertContext;
-  const history = useHistory();
-  const sendRequest = async (requestData) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(requestData),
-      redirect: "follow",
-    };
-    await fetch("/graphql", requestOptions);
-  };
-  const requestData = {
-    query: `
-        mutation {
-            cancelBooking(bookingID: "${booking._id}") {
-              title
-            }
-          }
-		`,
-  };
+
+  const eventContext = useContext(EventContext);
+
+  const { cancelBooking } = eventContext;
+
+  const [cancelling, setCancelling] = useState(false);
+
   const handleCancel = async () => {
-    if (await validateAuth()) {
-      await sendRequest(requestData);
-      cancelBooking();
-    } else {
-      showAlert("warning", [{ message: "Plaese Login First" }]);
-      history.push("/auth");
-    }
+    setCancelling(true);
+    await cancelBooking(booking._id);
   };
+
   return (
     <li className="mb-3 list__item border align-items-center list-group-item list-group-item-action flex-column align-items-start">
       <div className="list__item__header mb-2 d-flex w-100 justify-content-between align-items-center">
         <h5 className=" font-weight-bold" style={{ color: "blue" }}>
           {booking.event.title}
         </h5>
-        <button className="btn btn-sm btn-danger" onClick={handleCancel}>
-          Cancel
+        <button
+          disabled={cancelling}
+          className="btn btn-sm btn-danger"
+          onClick={handleCancel}
+        >
+          {cancelling ? "Cancelling ..." : "Cancel"}
         </button>
       </div>
       <p className="list__item__desc">{booking.event.description}</p>

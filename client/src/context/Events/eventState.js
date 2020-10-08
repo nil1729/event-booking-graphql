@@ -3,7 +3,13 @@ import EventReducer from "./eventReducer";
 import EventContext from "./eventContext";
 import sendRequest from "../utils/sendRequest";
 
-import { FETCH_EVENTS, FETCH_BOOKINGS } from "../utils/types";
+import {
+  FETCH_EVENTS,
+  FETCH_BOOKINGS,
+  BOOK_EVENT,
+  CANCEL_BOOKING,
+  CREATE_EVENT,
+} from "../utils/types";
 
 const EventState = (props) => {
   const initialState = {
@@ -76,6 +82,92 @@ const EventState = (props) => {
     }
   };
 
+  const bookEvent = async (eventID) => {
+    try {
+      const requestData = {
+        query: `
+                  mutation {
+                    bookEvent (eventID: "${eventID}") {
+                      _id
+                      event {
+                        title
+                        description
+                        date
+                        price
+                      }
+                      user {
+                        email
+                      }
+                      createdAt
+                    }
+                }
+          `,
+      };
+      const res = await sendRequest(requestData);
+      if (res.data && !res.errors) {
+        dispatch({
+          type: BOOK_EVENT,
+          payload: res.data.bookEvent,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const cancelBooking = async (bookingID) => {
+    try {
+      const requestData = {
+        query: `
+            mutation {
+              cancelBooking(bookingID: "${bookingID}") {
+                _id
+              }
+            }
+        `,
+      };
+      const res = await sendRequest(requestData);
+      if (res.data && !res.errors) {
+        dispatch({
+          type: CANCEL_BOOKING,
+          payload: bookingID,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const createEvent = async (title, description, price, date) => {
+    try {
+      const requestData = {
+        query: `
+                mutation {
+                    createEvent (eventInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}"}) {
+                      _id
+                      title
+                      description
+                      date
+                      price
+                      creator {
+                        _id
+                      }
+                  }
+                }
+            `,
+      };
+      const res = await sendRequest(requestData);
+      if (res.data && !res.errors) {
+        dispatch({
+          type: CREATE_EVENT,
+          payload: res.data.createEvent,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <EventContext.Provider
       value={{
@@ -85,6 +177,9 @@ const EventState = (props) => {
         error: state.error,
         loadEvents: loadEvents,
         loadBookings: loadBookings,
+        bookEvent: bookEvent,
+        cancelBooking: cancelBooking,
+        createEvent: createEvent,
       }}
     >
       {props.children}{" "}
