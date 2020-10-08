@@ -1,5 +1,10 @@
 import React, { useEffect, useContext } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 
 // Layouts
 import Navbar from "./components/layouts/Navbar";
@@ -27,6 +32,7 @@ const App = () => {
     isAuthenticated,
     loading: authLoading,
     token,
+    logout,
   } = authContext;
 
   useEffect(() => {
@@ -37,6 +43,8 @@ const App = () => {
     }
     if (token) {
       loadUser();
+    } else {
+      logout();
     }
     // eslint-disable-next-line
   }, [authLoading, isAuthenticated]);
@@ -49,6 +57,7 @@ const App = () => {
         <Route exact path="/auth" component={Authentication} />
         <Route exact path="/events" component={Events} />
         <PrivateRoute exact path="/bookings" component={Bookings} />
+        <Redirect from="/" to="/events" />
       </Switch>
     </Router>
   );

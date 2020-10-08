@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Progress from "../utils/Progress";
 import EventContext from "../../context/Events/eventContext";
 import BookingItem from "../utils/BookingItem";
@@ -12,10 +12,10 @@ const Bookings = () => {
   const history = useHistory();
 
   useEffect(() => {
-    console.log(history);
     if (history.location.search) {
       setTab("chart");
     }
+    // eslint-disable-next-line
   }, []);
 
   return (

@@ -94,14 +94,15 @@ const Charts = () => {
         />
       </div>
       <div className="jumbotron p-3 my-3">
-        <p>
-          Cheap: <span className="ml-2">{"₹0 < price <= ₹100"}</span>
+        <p className="text-info">
+          Cheap: <span className="ml-2 text-dark">{"₹0 < price <= ₹100"}</span>
         </p>
-        <p>
-          Normal: <span className="ml-2">{"₹100 < price < ₹500"}</span>
+        <p className="text-info">
+          Normal:{" "}
+          <span className="ml-2 text-dark">{"₹100 < price < ₹500"}</span>
         </p>
-        <p>
-          Expensive: <span className="ml-2">{"price > ₹500"}</span>
+        <p className="text-info">
+          Expensive: <span className="ml-2 text-dark">{"price > ₹500"}</span>
         </p>
       </div>
     </>
