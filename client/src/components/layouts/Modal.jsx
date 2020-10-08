@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext } from "react";
 import PropTypes from "prop-types";
-import AuthContext from "../../context/Auths/authContext";
+import EventContext from "../../context/Events/eventContext";
 
 const Modal = ({ closeModal }) => {
   const d = new Date();
@@ -9,74 +9,50 @@ const Modal = ({ closeModal }) => {
       d.getDate() < 10 ? 0 : ""
     }${d.getDate()}`
   );
-  const authContext = useContext(AuthContext);
-  const { token } = authContext;
+
+  const [creating, setCreating] = useState(false);
+
+  const eventContext = useContext(EventContext);
+  const { createEvent } = eventContext;
+
   const titleEl = useRef();
   const descEl = useRef();
   const dateEl = useRef();
   const priceEl = useRef();
-  const sendRequest = async (requestData) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token}`);
-    myHeaders.append("Content-Type", "application/json");
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(requestData),
-      redirect: "follow",
-    };
-    const res = await fetch("/graphql", requestOptions);
-    const JSONData = await res.json();
-    return JSONData.data.createEvent;
-  };
+
   const resetForm = () => {
     titleEl.current.value = "";
     descEl.current.value = "";
     priceEl.current.value = "";
     dateEl.current.value = `${today}T00:00`;
   };
+
   const handleSubmit = async (e) => {
+    setCreating(true);
     e.preventDefault();
     const title = titleEl.current.value;
     const description = descEl.current.value;
     const price = +priceEl.current.value;
     const date = dateEl.current.value;
     if (title.trim().length === 0 || description.trim().length === 0) {
-      return;
+      return setCreating(false);
     }
     if (price <= 0) {
-      return;
+      return setCreating(false);
     }
-    const requestData = {
-      query: `
-                mutation {
-                    createEvent (eventInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}"}) {
-                        _id
-						title
-						description
-						date
-						price
-						creator {
-							_id
-						}
-                    }
-                }
-            `,
-    };
-    const res = await sendRequest(requestData);
+    await createEvent(title, description, price, date);
     resetForm();
-    closehandle(res);
+    setCreating(false);
+    closeModal();
   };
-  const closehandle = (data) => {
-    closeModal(data);
-  };
+
   return (
     <div className="modal">
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Add Event</h5>
-            <button type="button" className="close" onClick={closehandle}>
+            <button type="button" className="close" onClick={closeModal}>
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -100,6 +76,7 @@ const Modal = ({ closeModal }) => {
                   className="form-control"
                   placeholder="Event Cost"
                   min="0"
+                  step=".01"
                   required
                 />
               </div>
@@ -123,9 +100,15 @@ const Modal = ({ closeModal }) => {
                   rows="3"
                 ></textarea>
               </div>
-              <button type="submit" className="btn btn-sm btn-primary">
-                Submit
-              </button>
+              <div className="row my-1">
+                <button
+                  disabled={creating}
+                  type="submit"
+                  className="btn btn-sm btn-primary m-auto"
+                >
+                  {creating ? "Creating ..." : "Submit"}
+                </button>
+              </div>
             </form>
           </div>
         </div>

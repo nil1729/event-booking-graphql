@@ -1,54 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 import moment from "moment";
 import AuthContext from "../../context/Auths/authContext";
+import EventContext from "../../context/Events/eventContext";
 
 const DetailModal = ({ event, closeDetailModal }) => {
   const authContext = useContext(AuthContext);
-  const { token } = authContext;
+  const eventContext = useContext(EventContext);
+  const { bookEvent } = eventContext;
+  const { isAuthenticated } = authContext;
   const formattedDate = moment(event.date).format("Do MMM YYYY");
   const history = useHistory();
 
-  const sendRequest = async (requestData) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(requestData),
-      redirect: "follow",
-    };
-    const res = await fetch("/graphql", requestOptions);
-    const JSONData = await res.json();
-    return JSONData.data.bookEvent;
-  };
-  const requestData = {
-    query: `
-            mutation {
-                    bookEvent (eventID: "${event._id}") {
-                        _id
-						event {
-							title
-							description
-							date
-							price
-						}
-						user {
-							email
-						}
-						createdAt
-                    }
-                }
-		`,
-  };
+  const [booking, setBooking] = useState(false);
+
   const handleBook = async () => {
-    if (!token) {
+    setBooking(true);
+    if (!isAuthenticated) {
       history.push("/auth");
     } else {
-      const res = await sendRequest(requestData);
-      closeDetailModal(res);
+      await bookEvent(event._id);
+      setBooking(false);
       history.push("/bookings");
     }
   };
@@ -76,10 +49,11 @@ const DetailModal = ({ event, closeDetailModal }) => {
               <small className="text-dark">{formattedDate}</small>
             </p>
             <button
+              disabled={booking}
               onClick={handleBook}
               className="text-dark btn btn-sm btn-warning"
             >
-              Book
+              {booking ? "Booking ..." : "Book"}
             </button>
           </div>
         </div>

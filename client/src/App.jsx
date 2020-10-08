@@ -31,7 +31,7 @@ const App = () => {
       loadUser();
       loadEvents();
     }
-  }, [authLoading]);
+  }, [authLoading, isAuthenticated]);
 
   // Main Rendered Components
   return (

@@ -75,23 +75,36 @@ const Charts = () => {
     borderWidth: 1,
   };
   return (
-    <div className="container py-2" style={{ height: "50vh" }}>
-      <Bar
-        data={{
-          labels: Object.keys(data),
-          datasets: [dateSet],
-        }}
-        options={{
-          scales: scaleConfig,
-          title: chartTitleStyle,
-          maintainAspectRatio: false,
-          tooltips: tooltipConfig,
-          legend: {
-            display: false,
-          },
-        }}
-      />
-    </div>
+    <>
+      <div className="container py-2" style={{ height: "50vh" }}>
+        <Bar
+          data={{
+            labels: Object.keys(data),
+            datasets: [dateSet],
+          }}
+          options={{
+            scales: scaleConfig,
+            title: chartTitleStyle,
+            maintainAspectRatio: false,
+            tooltips: tooltipConfig,
+            legend: {
+              display: false,
+            },
+          }}
+        />
+      </div>
+      <div className="jumbotron p-3 my-3">
+        <p>
+          Cheap: <span className="ml-2">{"₹0 < price <= ₹100"}</span>
+        </p>
+        <p>
+          Normal: <span className="ml-2">{"₹100 < price < ₹500"}</span>
+        </p>
+        <p>
+          Expensive: <span className="ml-2">{"price > ₹500"}</span>
+        </p>
+      </div>
+    </>
   );
 };
 
