@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 // Layouts
@@ -22,15 +22,23 @@ const App = () => {
   const authContext = useContext(AuthContext);
 
   const { loadEvents, loadBookings } = eventContext;
-  const { loadUser, isAuthenticated, loading: authLoading } = authContext;
+  const {
+    loadUser,
+    isAuthenticated,
+    loading: authLoading,
+    token,
+  } = authContext;
 
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
       loadBookings();
     } else {
-      loadUser();
       loadEvents();
     }
+    if (token) {
+      loadUser();
+    }
+    // eslint-disable-next-line
   }, [authLoading, isAuthenticated]);
 
   // Main Rendered Components

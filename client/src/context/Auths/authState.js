@@ -2,7 +2,13 @@ import React, { useReducer } from "react";
 import AuthContext from "./authContext";
 import AuthReducer from "./authReducers";
 
-import { LOGIN_USER, LOAD_USER, AUTH_ERROR } from "../utils/types";
+import {
+  LOGIN_USER,
+  LOAD_USER,
+  AUTH_ERROR,
+  LOGOUT,
+  CLEAR_ERROR,
+} from "../utils/types";
 import sendRequest from "../utils/sendRequest";
 
 const AuthState = (props) => {
@@ -90,6 +96,18 @@ const AuthState = (props) => {
     }
   };
 
+  const logout = () => {
+    dispatch({
+      type: LOGOUT,
+    });
+  };
+
+  const clearError = () => {
+    dispatch({
+      type: CLEAR_ERROR,
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -100,6 +118,8 @@ const AuthState = (props) => {
         user: state.user,
         authenticate: authenticate,
         loadUser: loadUser,
+        logout: logout,
+        clearError: clearError,
       }}
     >
       {props.children}{" "}

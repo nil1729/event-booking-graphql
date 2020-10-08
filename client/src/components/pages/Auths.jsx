@@ -21,6 +21,7 @@ const Authentication = () => {
     } else if (isAuthenticated) {
       history.push("/bookings");
     }
+    //eslint-disable-next-line
   }, [isAuthenticated, error]);
 
   const modeChange = () => {

@@ -1,7 +1,9 @@
 import {
     LOGIN_USER,
     LOAD_USER,
-    AUTH_ERROR
+    AUTH_ERROR,
+    LOGOUT,
+    CLEAR_ERROR
 } from '../utils/types';
 
 export default (state, action) => {
@@ -20,6 +22,7 @@ export default (state, action) => {
                     loading: false,
                     isAuthenticated: true,
             };
+        case LOGOUT:
         case AUTH_ERROR:
             localStorage.removeItem('token');
             return {
@@ -30,7 +33,12 @@ export default (state, action) => {
                     token: null,
                     error: action.payload,
             };
-        default:
-            return state;
+        case CLEAR_ERROR:
+            return {
+                ...state,
+                error: null,
+            }
+            default:
+                return state;
     }
 }

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import Progress from "../utils/Progress";
 import EventContext from "../../context/Events/eventContext";
 import BookingItem from "../utils/BookingItem";
@@ -8,14 +9,25 @@ const Bookings = () => {
   const [tab, setTab] = useState("list");
   const eventContext = useContext(EventContext);
   const { bookings } = eventContext;
+  const history = useHistory();
+
+  useEffect(() => {
+    console.log(history);
+    if (history.location.search) {
+      setTab("chart");
+    }
+  }, []);
 
   return (
     <div className="container">
       <ul className="nav nav-tabs mt-2 mb-3">
         <li className="nav-item mr-1">
           <a
-            onClick={() => {
+            href="something"
+            onClick={(e) => {
+              e.preventDefault();
               setTab("list");
+              history.push("/bookings");
             }}
             className={`nav-link ${tab === "list" ? "active" : ""}`}
           >
@@ -24,8 +36,11 @@ const Bookings = () => {
         </li>
         <li className="nav-item">
           <a
-            onClick={() => {
+            href="something"
+            onClick={(e) => {
+              e.preventDefault();
               setTab("chart");
+              history.push("/bookings?tab=chart");
             }}
             className={`nav-link ${tab !== "list" ? "active" : ""}`}
           >
@@ -53,7 +68,7 @@ const Bookings = () => {
           </div>
         </>
       ) : (
-        <Charts />
+        <>{!bookings ? <Progress /> : <Charts />}</>
       )}
     </div>
   );
