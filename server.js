@@ -1,9 +1,3 @@
-// Environment Variables Setup
-
-require("dotenv").config({
-  path: "./config/config.env",
-});
-
 // Express App
 const express = require("express");
 const app = express();
@@ -17,10 +11,11 @@ const path = require("path");
 const expressPlayground = require("graphql-playground-middleware-express")
   .default;
 
-// Database Connect
-connectDB();
 
 if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config({
+    path: "./config/config.env",
+  });
   app.use(cors());
   app.get(
     "/",
@@ -30,6 +25,11 @@ if (process.env.NODE_ENV !== "production") {
   );
   console.log("API is Cross Site accessible");
 }
+
+
+// Database Connect
+connectDB();
+
 
 // Body Parser Setup
 app.use(express.json());
