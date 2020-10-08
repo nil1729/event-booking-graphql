@@ -48,7 +48,7 @@ module.exports = buildSchema(`
             events: [Event!]!
             bookings: [Booking!]!
             loginUser(userInput: UserInput!): AuthData!
-            validateAuth: Boolean!
+            loadUser: User
         }
 
         type RootMutation {

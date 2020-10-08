@@ -1,7 +1,7 @@
 const User = require('../../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const validator = require('validator');
 
 module.exports = {
     // !Create A New User
@@ -19,6 +19,9 @@ module.exports = {
             if (user) {
                 throw new Error('Email already Registered');
             } else {
+                if (!validator.isEmail(email)) {
+                    throw new Error('Email is not valid');
+                }
                 const hashedPassword = await bcrypt.hash(password, 10);
                 user = new User({
                     email,
@@ -69,9 +72,17 @@ module.exports = {
             throw new Error(e);
         }
     },
-    validateAuth: async (args, req) => {
+    loadUser: async (args, req) => {
         try {
-            return req.isAuth;
+            if (!req.isAuth) {
+                throw new Error('Session Expired, Kindly login now');
+            }
+            const user = await User.findOne({
+                _id: req.userID
+            }, {
+                password: 0
+            });
+            return user;
         } catch (e) {
             console.log(e);
             throw new Error(e);

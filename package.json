@@ -22,7 +22,8 @@
 		"graphql": "^15.1.0",
 		"graphql-playground-middleware-express": "^1.7.21",
 		"jsonwebtoken": "^8.5.1",
-		"mongoose": "^5.9.19"
+		"mongoose": "^5.9.19",
+		"validator": "^13.1.17"
 	},
 	"devDependencies": {
 		"concurrently": "^5.2.0",
