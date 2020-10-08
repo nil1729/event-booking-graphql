@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
-import AuthContext from "../context/AuthContext.js";
+import AuthContext from "../../context/Auths/authContext";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -10,7 +10,7 @@ const Navbar = () => {
     };
   };
   const authContext = useContext(AuthContext);
-  const { isAuth, authLoading, logout } = authContext;
+  const { isAuthenticated, loading } = authContext;
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <span className="navbar-brand">GraphQL Events</span>
@@ -29,7 +29,7 @@ const Navbar = () => {
             </NavLink>
           </li>
 
-          {!isAuth && !authLoading ? (
+          {!isAuthenticated && !loading ? (
             <li className="nav-item" onClick={() => setOpen(!open)}>
               <NavLink className="nav-link" to="/auth">
                 Authenticate
@@ -44,7 +44,7 @@ const Navbar = () => {
               </li>
               <li className="nav-item" onClick={() => setOpen(!open)}>
                 <button
-                  onClick={logout}
+                  // onClick={logout}
                   className="btn btn-warning btn-sm text-dark"
                 >
                   Logout

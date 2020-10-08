@@ -1,91 +1,59 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import Alert from "../Alert";
-import AuthContext from "../../context/AuthContext.js";
-import AlertContext from "../../context/AlertContext.js";
+import Alert from "../layouts/Alert";
+import AuthContext from "../../context/Auths/authContext";
+import AlertContext from "../../context/Alerts/alertContext";
 
 const Authentication = () => {
   const authContext = useContext(AuthContext);
   const alertContext = useContext(AlertContext);
   const history = useHistory();
-  const { login, isAuth, authLoading } = authContext;
+  const { error, authenticate, isAuthenticated } = authContext;
   const { showAlert, msgs } = alertContext;
   const [modeLogin, setModeLogin] = useState(true);
   const emailEl = useRef();
   const passwordEl = useRef();
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    if (!isAuth && !authLoading) {
-      // Something
-    } else {
+    if (error && typeof error !== "undefined") {
+      showAlert("warning", error);
+    } else if (isAuthenticated) {
       history.push("/bookings");
     }
-  });
+  }, [isAuthenticated, error]);
+
   const modeChange = () => {
     setModeLogin(!modeLogin);
   };
+
   const resetForm = () => {
     emailEl.current.value = "";
     passwordEl.current.value = "";
   };
-  const createRequestData = (email, password, modeLogin) => {
-    let requestData = {
-      query: ` 
-                query {
-                    loginUser(userInput: {email: "${email}", password: "${password}"}){
-                        userID,
-                        token
-                    }
-                }
-            `,
-    };
-    if (!modeLogin) {
-      requestData = {
-        query: ` 
-                    mutation {
-                        createUser(userInput: {email: "${email}", password: "${password}"}){
-                            _id
-                            email
-                            password
-                        }
-                    }
-                `,
-      };
-    }
-    return requestData;
-  };
-  const sendRequest = async (requestData) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(requestData),
-      redirect: "follow",
-    };
-    const response = await fetch("/graphql", requestOptions);
-    const JSONData = await response.json();
-    return JSONData;
-  };
 
   const submitHandle = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const email = emailEl.current.value;
     const password = passwordEl.current.value;
     if (email.trim().length === 0 || password.trim().length === 0) {
-      return;
+      return setLoading(false);
     }
     resetForm();
-    const requestData = createRequestData(email, password, modeLogin);
-    const response = await sendRequest(requestData);
-    if (response.errors) {
-      return showAlert("warning", response.errors);
-    } else if (response.data.loginUser) {
-      await login(response.data.loginUser);
-      history.push("/bookings");
-      return;
-    } else {
+    const errors = await authenticate(modeLogin, email, password);
+    setLoading(false);
+    if (!errors && !modeLogin) {
+      showAlert("success", [
+        { message: "Successfully Registered, Kindly Login now" },
+      ]);
       setModeLogin(true);
+      return;
+    } else if (errors) {
+      showAlert("warning", errors);
+      return;
     }
+    history.push("/bookings");
   };
 
   return (
@@ -119,10 +87,15 @@ const Authentication = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-sm btn-danger">
+        <button
+          disabled={loading}
+          type="submit"
+          className="btn btn-sm btn-danger"
+        >
           Submit
         </button>
         <button
+          disabled={loading}
           type="button"
           className="btn btn-sm btn-warning ml-2 text-dark"
           onClick={modeChange}
