@@ -10,7 +10,7 @@ const Navbar = () => {
     };
   };
   const authContext = useContext(AuthContext);
-  const { isAuthenticated, loading } = authContext;
+  const { isAuthenticated, loading, logout } = authContext;
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <span className="navbar-brand">GraphQL Events</span>
@@ -44,7 +44,7 @@ const Navbar = () => {
               </li>
               <li className="nav-item" onClick={() => setOpen(!open)}>
                 <button
-                  // onClick={logout}
+                  onClick={logout}
                   className="btn btn-warning btn-sm text-dark"
                 >
                   Logout

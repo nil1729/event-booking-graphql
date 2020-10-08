@@ -5,7 +5,7 @@ import AuthContext from "../../context/Auths/authContext";
 
 const ListItem = ({ data, openDeatilModal }) => {
   const authContext = useContext(AuthContext);
-  const { userID } = authContext;
+  const { user } = authContext;
   const formattedDate = moment(data.date).format("Do MMM YYYY");
   return (
     <li className="list__item mb-2 border list-group-item list-group-item-action flex-column align-items-start">
@@ -13,7 +13,7 @@ const ListItem = ({ data, openDeatilModal }) => {
         <h5 className="font-weight-bold" style={{ color: "blue" }}>
           {data.title}
         </h5>
-        {userID === data.creator._id ? (
+        {user && user._id === data.creator._id ? (
           <p className="lead text-dark">You are the owner of this Event</p>
         ) : (
           <button
@@ -26,7 +26,7 @@ const ListItem = ({ data, openDeatilModal }) => {
           </button>
         )}
       </div>
-      {userID === data.creator._id ? (
+      {user && user._id === data.creator._id ? (
         <p className="mb-1 list__item__desc">{data.description}</p>
       ) : (
         <></>

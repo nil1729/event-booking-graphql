@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import AuthContext from "../../context/Auths/authContext";
 import EventContext from "../../context/Events/eventContext";
 import Modal from "../layouts/Modal";
@@ -10,7 +10,7 @@ const Events = () => {
   const authContext = useContext(AuthContext);
   const eventContext = useContext(EventContext);
   const { token } = authContext;
-  const { events, addEvent, addBooking } = eventContext;
+  const { events } = eventContext;
   const [modalShow, setModalShow] = useState(false);
   const [detailModalShow, setDetailModalShow] = useState(false);
   const [current, setCurrent] = useState({});
