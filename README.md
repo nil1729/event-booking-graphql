@@ -12,18 +12,16 @@ Simple GraphQL server implementation Using ReactJS, NodeJS and MongoDB.
 
 ### Technology and Modules used for this Project
 
-1. _`Node JS Express Framework`_ is used as a building Backend part of this Website.
-2. _`MongoDB`_ used for Database to store Users and Events Details.
-3. _`GarphQL`_ is used to build APIs for this Website.
-4. _`React JS`_ is used as frontend Framework for building SPA.
-5. _`Bootswatch Minty Theme`_ is used as CSS Framework and the website is Responsive for all Devices.
-6. _`ChartJS`_ is used for Charting the responses and Data.
-
-7. _`JWT`_ is used for Authentication purpose.
+1. `Node JS Express Framework` is used as a building Backend part of this Website.
+2. `MongoDB` used for Database to store Users and Events Details.
+3. `GarphQL` is used to build APIs for this Website.
+4. `React JS` is used as frontend Framework for building SPA.
+5. `Bootswatch Minty Theme` is used as CSS Framework and the website is Responsive for all Devices.
+6. `ChartJS` is used for Charting the responses and Data.
+7. `JWT` is used for Authentication purpose.
 8. Token will be stored in `Local Storage` of Client Browser.
 9. Encrypt passwords with `bcrypt`
-
-10. _`ChartJS`_ is used for charting the Data got from Bookings.
+10. `ChartJS` is used for charting the Data got from Bookings.
 
 ---
 

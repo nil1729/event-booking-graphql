@@ -8,11 +8,12 @@ const graphQLResolvers = require("./graphql/resolvers/index");
 const isAuth = require("./middleware/is-Auth");
 const cors = require("cors");
 const path = require("path");
-const expressPlayground = require("graphql-playground-middleware-express")
-  .default;
 
 
+// Only for Development
 if (process.env.NODE_ENV !== "production") {
+  const expressPlayground = require("graphql-playground-middleware-express")
+    .default;
   require("dotenv").config({
     path: "./config/config.env",
   });
@@ -46,12 +47,15 @@ app.use(
   }))
 );
 
+//  Only in Production mode
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
+
+
 // PORT Setup
 const PORT = process.env.PORT || 5000;
 
