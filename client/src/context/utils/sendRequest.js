@@ -1,6 +1,8 @@
 const sendRequest = async (requestData) => {
     const myHeaders = new Headers();
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("authCredentials") ?
+        JSON.parse(localStorage.getItem("authCredentials")).token :
+        null
     myHeaders.append("Content-Type", "application/json");
     if (token) {
         myHeaders.append("Authorization", `Bearer ${token}`);

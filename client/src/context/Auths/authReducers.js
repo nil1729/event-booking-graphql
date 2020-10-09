@@ -9,7 +9,7 @@ import {
 export default (state, action) => {
     switch (action.type) {
         case LOGIN_USER:
-            localStorage.setItem('token', action.payload.token);
+            localStorage.setItem('authCredentials', JSON.stringify(action.payload));
             return {
                 ...state,
                 token: action.payload.token,
@@ -24,7 +24,7 @@ export default (state, action) => {
             };
         case LOGOUT:
         case AUTH_ERROR:
-            localStorage.removeItem('token');
+            localStorage.removeItem('authCredentials');
             return {
                 ...state,
                 isAuthenticated: false,
@@ -37,8 +37,8 @@ export default (state, action) => {
             return {
                 ...state,
                 error: null,
-            }
-            default:
-                return state;
+            };
+        default:
+            return state;
     }
 }

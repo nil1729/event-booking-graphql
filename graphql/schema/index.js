@@ -30,8 +30,10 @@ module.exports = buildSchema(`
         type AuthData {
             userID: ID!
             token: String!
+            expiresIn: Float!
+            lastLogin: Float!
         }
-        
+
         input UserInput {
             email: String!
             password: String!

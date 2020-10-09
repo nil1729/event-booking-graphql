@@ -8,6 +8,7 @@ import {
 
 // Layouts
 import Navbar from "./components/layouts/Navbar";
+import Alert from "./components/layouts/Alert";
 
 // Pages
 import Authentication from "./components/pages/Auths";
@@ -20,30 +21,38 @@ import PrivateRoute from "./components/routing/PrivateRoute";
 // Context APIs
 import EventContext from "./context/Events/eventContext";
 import AuthContext from "./context/Auths/authContext";
+import AlertContext from "./context/Alerts/alertContext";
 
 // Main App
 const App = () => {
   const eventContext = useContext(EventContext);
   const authContext = useContext(AuthContext);
+  const alertContext = useContext(AlertContext);
 
-  const { loadEvents, loadBookings } = eventContext;
+  const { msgs, showAlert } = alertContext;
+  const { loadEvents, loadBookings, events, clearBookings } = eventContext;
   const {
     loadUser,
     isAuthenticated,
     loading: authLoading,
     token,
     logout,
+    error: authError,
   } = authContext;
 
   useEffect(() => {
+    if (authError && typeof authError !== "undefined") {
+      showAlert("warning", authError);
+    }
     if (isAuthenticated && !authLoading) {
       loadBookings();
-    } else {
+    } else if (!events) {
       loadEvents();
     }
     if (token) {
       loadUser();
     } else {
+      clearBookings();
       logout();
     }
     // eslint-disable-next-line
@@ -53,6 +62,7 @@ const App = () => {
   return (
     <Router>
       <Navbar />
+      {msgs && <Alert />}
       <Switch>
         <Route exact path="/auth" component={Authentication} />
         <Route exact path="/events" component={Events} />

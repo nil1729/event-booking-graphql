@@ -57,6 +57,8 @@ module.exports = {
             if (!isMatch) {
                 throw new Error('Authentication Failed');
             }
+            let expiresIn = 60 * 60 * 1000;
+            let lastLogin = Date.now();
             const token = await jwt.sign({
                 userID: user.id,
                 email: user.email
@@ -66,6 +68,8 @@ module.exports = {
             return {
                 userID: user.id,
                 token: token,
+                expiresIn,
+                lastLogin
             }
         } catch (e) {
             console.log(e);

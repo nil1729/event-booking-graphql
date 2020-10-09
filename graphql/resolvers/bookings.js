@@ -1,4 +1,5 @@
 const Booking = require('../../models/Booking');
+const Event = require('../../models/Event');
 const {
     transformBooking,
     transformEvent
@@ -32,11 +33,25 @@ module.exports = {
             if (!req.isAuth) {
                 throw new Error('Unauthenticated request');
             }
-            const newBooking = new Booking({
+            let bookedEvent = await Booking.findOne({
                 event: args.eventID,
                 user: req.userID
             });
-            const result = await newBooking.save();
+            if (bookedEvent) {
+                throw new Error('You are already booked this event');
+            }
+            let ownedEvent = await Event.findOne({
+                _id: args.eventID,
+                creator: req.userID
+            });
+            if (ownedEvent) {
+                throw new Error('You are the owner of this event');
+            }
+            bookedEvent = new Booking({
+                event: args.eventID,
+                user: req.userID
+            });
+            const result = await bookedEvent.save();
             return transformBooking(result);
         } catch (e) {
             console.log(e);

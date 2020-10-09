@@ -4,6 +4,7 @@ import {
   BOOK_EVENT,
   CANCEL_BOOKING,
   CREATE_EVENT,
+  CLEAR_BOOKINGS
 } from "../utils/types";
 
 export default (state, action) => {
@@ -34,6 +35,11 @@ export default (state, action) => {
       return {
         ...state,
         events: [action.payload, ...state.events],
+      };
+    case CLEAR_BOOKINGS:
+      return {
+        ...state,
+        bookings: null,
       };
     default:
       return state;

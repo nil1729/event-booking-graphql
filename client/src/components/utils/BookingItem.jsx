@@ -2,11 +2,15 @@ import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import EventContext from "../../context/Events/eventContext";
+import AuthContext from "../../context/Auths/authContext";
 
 const BookingItem = ({ booking }) => {
   const formatDate = (date) => {
     return moment(date).format("Do MMM YYYY hh:mm a");
   };
+
+  const authContext = useContext(AuthContext);
+  const { checkSession } = authContext;
 
   const eventContext = useContext(EventContext);
 
@@ -15,8 +19,10 @@ const BookingItem = ({ booking }) => {
   const [cancelling, setCancelling] = useState(false);
 
   const handleCancel = async () => {
-    setCancelling(true);
-    await cancelBooking(booking._id);
+    if (checkSession()) {
+      setCancelling(true);
+      await cancelBooking(booking._id);
+    }
   };
 
   return (

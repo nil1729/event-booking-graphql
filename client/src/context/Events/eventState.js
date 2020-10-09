@@ -9,6 +9,7 @@ import {
   BOOK_EVENT,
   CANCEL_BOOKING,
   CREATE_EVENT,
+  CLEAR_BOOKINGS,
 } from "../utils/types";
 
 const EventState = (props) => {
@@ -57,6 +58,7 @@ const EventState = (props) => {
       				bookings {
       					_id
       					event {
+                  _id
       						title
       						description
       						date
@@ -90,6 +92,7 @@ const EventState = (props) => {
                     bookEvent (eventID: "${eventID}") {
                       _id
                       event {
+                        _id
                         title
                         description
                         date
@@ -168,6 +171,12 @@ const EventState = (props) => {
     }
   };
 
+  const clearBookings = () => {
+    dispatch({
+      type: CLEAR_BOOKINGS,
+    });
+  };
+
   return (
     <EventContext.Provider
       value={{
@@ -180,6 +189,7 @@ const EventState = (props) => {
         bookEvent: bookEvent,
         cancelBooking: cancelBooking,
         createEvent: createEvent,
+        clearBookings: clearBookings,
       }}
     >
       {props.children}{" "}

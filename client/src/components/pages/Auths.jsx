@@ -1,6 +1,5 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import Alert from "../layouts/Alert";
 import AuthContext from "../../context/Auths/authContext";
 import AlertContext from "../../context/Alerts/alertContext";
 
@@ -9,16 +8,14 @@ const Authentication = () => {
   const alertContext = useContext(AlertContext);
   const history = useHistory();
   const { error, authenticate, isAuthenticated } = authContext;
-  const { showAlert, msgs } = alertContext;
+  const { showAlert } = alertContext;
   const [modeLogin, setModeLogin] = useState(true);
   const emailEl = useRef();
   const passwordEl = useRef();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (error && typeof error !== "undefined") {
-      showAlert("warning", error);
-    } else if (isAuthenticated) {
+    if (!error && isAuthenticated) {
       history.push("/bookings");
     }
     //eslint-disable-next-line
@@ -59,7 +56,6 @@ const Authentication = () => {
 
   return (
     <div className="container mt-4">
-      {msgs && <Alert />}
       <form
         className="auth__form"
         style={{ width: "60%", margin: "auto" }}
@@ -93,7 +89,7 @@ const Authentication = () => {
           type="submit"
           className="btn btn-sm btn-danger"
         >
-          Submit
+          {loading ? "Loading ..." : "Submit"}
         </button>
         <button
           disabled={loading}

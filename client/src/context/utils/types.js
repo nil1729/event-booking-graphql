@@ -7,7 +7,7 @@ export const FETCH_BOOKINGS = 'FETCH_BOOKINGS';
 export const BOOK_EVENT = 'BOOK_EVENT';
 export const CANCEL_BOOKING = 'CANCEL_BOOKING';
 export const CREATE_EVENT = 'CREATE_EVENT';
-
+export const CLEAR_BOOKINGS = 'CLEAR_BOOKINGS';
 
 // Authentication
 export const LOGIN_USER = 'LOGIN_USER';

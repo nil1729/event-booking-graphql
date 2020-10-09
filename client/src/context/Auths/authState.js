@@ -15,7 +15,9 @@ const AuthState = (props) => {
   const initialState = {
     isAuthenticated: false,
     user: null,
-    token: localStorage.getItem("token") || null,
+    token: localStorage.getItem("authCredentials")
+      ? JSON.parse(localStorage.getItem("authCredentials")).token
+      : null,
     loading: true,
     error: null,
   };
@@ -28,6 +30,8 @@ const AuthState = (props) => {
               query {
                   loginUser(userInput: {email: "${email}", password: "${password}"}){
                     token
+                    expiresIn
+                    lastLogin
                   }
               }
             `,
@@ -96,8 +100,29 @@ const AuthState = (props) => {
     }
   };
 
+  const checkSession = async () => {
+    try {
+      const sessionDuration = JSON.parse(
+        localStorage.getItem("authCredentials")
+      ).expiresIn;
+      const lastLoginTime = JSON.parse(localStorage.getItem("authCredentials"))
+        .lastLogin;
+      const currentTime = Date.now();
+      const timeout = lastLoginTime + sessionDuration - currentTime;
+      if (timeout > 0) {
+        return true;
+      }
+      dispatch({
+        type: AUTH_ERROR,
+        payload: [{ message: "Session Expired. Please Login again" }],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const logout = () => {
-    dispatch({
+    return dispatch({
       type: LOGOUT,
     });
   };
@@ -120,6 +145,7 @@ const AuthState = (props) => {
         loadUser: loadUser,
         logout: logout,
         clearError: clearError,
+        checkSession: checkSession,
       }}
     >
       {props.children}{" "}
