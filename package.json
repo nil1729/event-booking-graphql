@@ -22,7 +22,7 @@
 		"graphql": "^15.1.0",
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.9.19",
-		"validator": "^13.1.17"
+		"validator": "^13.7.0"
 	},
 	"devDependencies": {
 		"concurrently": "^5.2.0",
